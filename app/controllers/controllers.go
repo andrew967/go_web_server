@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"go_web_server/models"
+	"html/template"
 	"net/http"
 
 	"gorm.io/gorm"
@@ -43,4 +44,15 @@ func ShowAllUsers(c *fiber.Ctx, db *gorm.DB) error {
 	}
 
 	return c.Status(http.StatusAccepted).SendString(string(jsonString))
+}
+
+func ShowAllUsers2(c *fiber.Ctx, db *gorm.DB) error {
+	var users []models.User
+	response := db.Find(&users)
+	if response.Error != nil {
+		return c.Status(500).SendString("Something goes wrong")
+	}
+	tmp1 := template.Must(template.ParseFiles("templates/users.html"))
+	c.Response().Header.Set("Content-Type", "text/html")
+	return tmp1.Execute(c.Response().BodyWriter(), users)
 }
