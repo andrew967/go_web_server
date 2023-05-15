@@ -12,9 +12,9 @@ import (
 
 func main() {
 	//connect with db
-	dsn := "host=localhost user=andrew password=TiYx9a395%k^ dbname=web_server_go port=5432"
+	Dsn := "host=localhost user=andrew password=TiYx9a395%k^ dbname=web_server_go port=5432"
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(Dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
