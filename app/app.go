@@ -22,4 +22,10 @@ func SetupRouters(api fiber.Router, db *gorm.DB) {
 	api.Get("/show_users_table", func(c *fiber.Ctx) error {
 		return controllers.ShowAllUsers2(c, db)
 	})
+	api.Patch("/update_user_by_id", func(c *fiber.Ctx) error {
+		return controllers.UpdateUserInformation(c, db)
+	})
+	api.Delete("/delete_user_by_id", func(c *fiber.Ctx) error {
+		return controllers.DeleteUser(c, db)
+	})
 }

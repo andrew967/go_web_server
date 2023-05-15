@@ -56,3 +56,42 @@ func ShowAllUsers2(c *fiber.Ctx, db *gorm.DB) error {
 	c.Response().Header.Set("Content-Type", "text/html")
 	return tmp1.Execute(c.Response().BodyWriter(), users)
 }
+
+func UpdateUserInformation(c *fiber.Ctx, db *gorm.DB) error {
+	var user models.User
+	response := db.Find(&user, "id = ?", c.FormValue("id"))
+
+	if response.Error != nil {
+		return c.Status(500).SendString("Something goes wrong")
+	}
+
+	user.Name = c.FormValue("new_name")
+	user.Surname = c.FormValue("new_surname")
+	user.Sex = c.FormValue("new_sex")
+	user.Email = c.FormValue("new_email")
+	user.PhoneNumber = c.FormValue("new_phonenumber")
+	age, err := strconv.Atoi(c.FormValue("new_age"))
+	if err != nil {
+		return c.Status(400).SendString("Age is not int")
+	}
+	user.Age = age
+
+	db.Save(&user)
+	return c.Status(http.StatusOK).SendString("Information has been updated successfully")
+}
+
+func DeleteUser(c *fiber.Ctx, db *gorm.DB) error {
+	var user models.User
+	response := db.Find(&user, "id = ?", c.FormValue("id"))
+
+	if response.Error != nil {
+		return c.Status(500).SendString("We can not find the user with id " + c.FormValue("id"))
+	}
+
+	response = db.Delete(&user)
+	if response.Error != nil {
+		return c.Status(500).SendString("We can not delete the user with id " + c.FormValue("id"))
+	}
+
+	return c.Status(http.StatusOK).SendString("User has been deleted successfully")
+}
