@@ -95,3 +95,15 @@ func DeleteUser(c *fiber.Ctx, db *gorm.DB) error {
 
 	return c.Status(http.StatusOK).SendString("User has been deleted successfully")
 }
+
+func ShowAllUsers3(c *fiber.Ctx, db *gorm.DB) error {
+	var users []models.User
+	response := db.Find(&users)
+
+	if response.Error != nil {
+		return c.Status(http.StatusBadRequest).SendString("Something goes wrong")
+	}
+	tmp1 := template.Must(template.ParseFiles("templates/userwb.html"))
+	c.Response().Header.Set("Content-Type", "text/html")
+	return tmp1.Execute(c.Response().BodyWriter(), users)
+}
