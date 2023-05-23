@@ -49,7 +49,12 @@ func SetupRouters(api fiber.Router, db *gorm.DB) {
 		return controllers.Authorization(c, db)
 	})
 
+	api.Post("/for_reg", func(c *fiber.Ctx) error {
+		return controllers.Registration(c, db)
+	})
+
 	api.Get("/protected", auth.Protected)
 
+	api.Get("/signin", controllers.SignIn)
 	api.Get("/signup", controllers.SignUp)
 }

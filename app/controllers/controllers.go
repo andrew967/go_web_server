@@ -132,3 +132,31 @@ func Authorization(c *fiber.Ctx, db *gorm.DB) error {
 func SignUp(c *fiber.Ctx) error {
 	return c.SendFile("templates/signup.html")
 }
+
+func Registration(c *fiber.Ctx, db *gorm.DB) error {
+	login := c.FormValue("login")
+	var user []models.Authorization
+	response := db.Where("login = ?", login).Find(&user)
+	if response.Error != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Problems with DB")
+	}
+	if len(user) != 0 {
+		return c.Status(fiber.StatusBadRequest).SendString("This login is already occupied.")
+	}
+	user1 := models.Authorization{Login: login, Password: c.FormValue("password")}
+	resualt := db.Create(&user1)
+	if resualt.Error != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error with adding information in DB")
+	}
+
+	token, err := auth.GenerateToken(user1)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate token")
+	}
+	return c.JSON(fiber.Map{"token": token, "Response_string": "User has been successfully added."})
+
+}
+
+func SignIn(c *fiber.Ctx) error {
+	return c.SendFile("templates/signin.html")
+}
