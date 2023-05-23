@@ -14,6 +14,10 @@ func RunMigrations(db *gorm.DB) error {
 		return err
 	}
 
+	if err := db.AutoMigrate(&models.Authorization{}); err != nil {
+		return err
+	}
+
 	return nil
 
 }

@@ -26,3 +26,9 @@ func (u *User) FillData(name, surname, phonenumber, email, sex string, age int) 
 func (u *User) AddToDatabase(db *gorm.DB) error {
 	return db.Create(u).Error
 }
+
+type Authorization struct {
+	gorm.Model
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}

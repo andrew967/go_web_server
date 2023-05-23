@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	"go_web_server/app/auth"
 	"go_web_server/models"
 	"html/template"
 	"net/http"
@@ -106,4 +107,28 @@ func ShowAllUsers3(c *fiber.Ctx, db *gorm.DB) error {
 	tmp1 := template.Must(template.ParseFiles("templates/userwb.html"))
 	c.Response().Header.Set("Content-Type", "text/html")
 	return tmp1.Execute(c.Response().BodyWriter(), users)
+}
+
+func Authorization(c *fiber.Ctx, db *gorm.DB) error {
+	login := c.FormValue("login")
+	password := c.FormValue("password")
+	var user models.Authorization
+	response := db.Where("login = ?", login).Find(&user)
+	if response.Error != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error!")
+	}
+
+	if user.Password != password {
+		return c.Status(fiber.StatusBadRequest).SendString("Login or password is incorrect.")
+	}
+
+	token, err := auth.GenerateToken(user)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate token")
+	}
+	return c.JSON(fiber.Map{"token": token})
+}
+
+func SignUp(c *fiber.Ctx) error {
+	return c.SendFile("templates/signup.html")
 }
