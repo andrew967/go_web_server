@@ -6,6 +6,7 @@ require github.com/gofiber/fiber/v2 v2.45.0
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fasthttp/websocket v1.5.3 // indirect
 	github.com/gofiber/websocket/v2 v2.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect

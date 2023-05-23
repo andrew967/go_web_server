@@ -24,6 +24,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	defer dbConfig.Close()
 
 	//config pool connection

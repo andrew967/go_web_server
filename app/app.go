@@ -1,6 +1,7 @@
 package app
 
 import (
+	"go_web_server/app/auth"
 	controllers "go_web_server/app/controllers"
 	handlers "go_web_server/app/handlers"
 	websockets "go_web_server/app/websockets"
@@ -44,4 +45,11 @@ func SetupRouters(api fiber.Router, db *gorm.DB) {
 		websockets.ShowUsersWebsocket(c, db)
 	}))
 
+	api.Post("/login", func(c *fiber.Ctx) error {
+		return controllers.Authorization(c, db)
+	})
+
+	api.Get("/protected", auth.Protected)
+
+	api.Get("/signup", controllers.SignUp)
 }
